@@ -180,7 +180,25 @@ void clear(LinkedList *someList)
 // then exit the program with status 2
 void *set(LinkedList *someList, int position, void *newElement)
 {
-  return NULL;
+  // Illegal position
+  if(position > someList->size || position < 0){
+    exit(2);
+  }
+  Node *head = someList->header;
+  Node *iter = someList->header;
+
+  int i;
+  for(i=0; i<position; i++){  // Find proper node
+    if(iter == NULL){   // catch any bad values
+      exit(2);
+    }
+    iter = iter->next;
+  }
+
+  void *data = iter->data;
+  iter->data = newElement;  // Set new data
+  return data;
+  //TODO free a returning variable??
 }
 
 // Helper method, loops through and returns the Node which is in the last position

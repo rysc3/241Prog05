@@ -135,6 +135,7 @@ void addFirst(LinkedList *someList, void *newElement)
   newNode->next = someList->header;   // Next
   newNode->prev = findLast(someList);   // Previous
   someList->header = newNode;   // someList Header
+  free(newNode);
 }
 
 // remove the last element in the list, and return a pointer
@@ -142,7 +143,20 @@ void addFirst(LinkedList *someList, void *newElement)
 // if the list is empty, exit the program with status 2
 void *removeLast(LinkedList *someList)
 {
-  return NULL;
+  if(someList->header == NULL){
+    exit(2);
+  }
+  Node *head = someList->header;  // Save some typing
+  Node *lastNode = head->prev;  // Store prev node for return
+  if(lastNode == head){
+    someList->header = NULL;
+  }else{
+    lastNode->prev->next = NULL;
+    head->prev = lastNode->prev;
+  }
+  void *data = lastNode->data;
+  free(lastNode);
+  return data;
 }
 
 // this function effectively empties the list

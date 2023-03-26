@@ -162,6 +162,15 @@ void *removeLast(LinkedList *someList)
 // this function effectively empties the list
 void clear(LinkedList *someList)
 {
+  Node *current = someList->header;
+  Node *iter;
+  while(current != NULL){
+    iter = current->next;
+    free(current->data);
+    free(current);
+    current = iter;
+  }
+  someList->header = NULL;
 }
 
 // alter the data in the given position in the List to

@@ -1,4 +1,8 @@
-/**  @author Ryan Scherbarth **/
+/**
+ * @author Ryan Scherbarth
+ * cs241
+ * 3/30/23
+**/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,56 +42,57 @@ Node* findLast(LinkedList *someList);  // Helper proto-type
 int main()
 {
 
-  LinkedList myList;
+  // LinkedList myList;
 
-  LinkedList *roster = &myList;
+  // LinkedList *roster = &myList;
 
-  createList(roster); // initialize the fields of the list
+  // createList(roster); // initialize the fields of the list
 
-  // process a sequence of List operations from stdin
-  // File to write to
-  FILE *outputFile = fopen("OutputA", "w");
+  // // process a sequence of List operations from stdin
+  // // File to write to
+  // FILE *outputFile = fopen("OutputA", "w");
 
-  char line[10];  // Lines shouldn't be any longer than 10
-  char prev = '\0';
-  while(fgets(line, 10, stdin) != NULL){
-    char operation = line[0];   // operation character
-    char *input = &line[2];   // Input given
+  // char line[10];  // Lines shouldn't be any longer than 10
+  // char prev = '\0';
+  // while(fgets(line, 10, stdin) != NULL){
+  //   char operation = line[0];   // operation character
+  //   char *input = &line[2];   // Input given
 
-    switch(operation){
-      case 'a':
-        addFirst(roster, input);  // Append
-        break;
-      case 'd':
-        delete(roster, (int)input);   // Delete at index input
-        break;
-      case 'o':
-        outputList(roster);   // Output the list
-        break;
-      case 'f':
-        addFirst(roster, input);  // Add to beginning of list
-        break;
-      case 'r':
-        removeLast(roster);   // Remove last item in list
-        break;
-      case 'c':
-        clear(roster);  // Clear the list
-        break;
-      case 's':
-      //TODO Should be void* type for third argument
-        set(roster, input[1], input);   // Change value at a specified location
-        break;
-      default:
-        exit(2);  // If the first char is invalid, exit
-    }
-    // handle output
-  //   int i;
-  //   Node *current = roster->header;
-  //   for(i=0; i<roster->size; i++){
-  //     fprintf(outputFile, "%s\n", current->data);
-  //     current = current->next;
+  //   switch(operation){
+  //     case 'a':
+  //       addFirst(roster, input);  // Append
+  //       break;
+  //     case 'd':
+  //       delete(roster, (int)input);   // Delete at index input
+  //       break;
+  //     case 'o':
+  //       outputList(roster);   // Output the list
+  //       break;
+  //     case 'f':
+  //       addFirst(roster, input);  // Add to beginning of list
+  //       break;
+  //     case 'r':
+  //       removeLast(roster);   // Remove last item in list
+  //       break;
+  //     case 'c':
+  //       clear(roster);  // Clear the list
+  //       break;
+  //     case 's':
+  //     //TODO Should be void* type for third argument
+  //       set(roster, input[1], input);   // Change value at a specified location
+  //       break;
+  //     default:
+  //       exit(2);  // If the first char is invalid, exit
   //   }
   // }
+  //   // handle output
+  // //   int i;
+  // //   Node *current = roster->header;
+  // //   for(i=0; i<roster->size; i++){
+  // //     fprintf(outputFile, "%s\n", current->data);
+  // //     current = current->next;
+  // //   }
+  // // }
   // fclose(outputFile);
 
   return 0;

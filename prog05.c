@@ -48,22 +48,36 @@ int main()
 
   createList(roster); // initialize the fields of the list
 
-  // process a sequence of List operations from stdin
-  // File to write to
-  FILE *outputFile = fopen("OutputA", "w");
+	/*
+ *	redirect through stdin to take input and output
+ *	./a.out < input > output1
+  */
 
-  char line[10];  // Lines shouldn't be any longer than 10
-  char prev = '\0';
-  while(fgets(line, 10, stdin) != NULL){
-    char operation = line[0];   // operation character
-    char *input = &line[2];   // Input given
+	char line[MAX_NAME_LENGTH];
+	char operation;
+	char input;
+
+
+  while(fgets(line, MAX_NAME_LENGTH, stdin) != NULL){
+/*
+ * stores the variables we will use for the doing things
+ * Operation takes the first char of the line
+ * input will store the string that follows the line
+ *
+ * -- If the operation needs an int as an input, it will
+ *  be cast to an int in the swtich statement
+ */
+		char *input = malloc(MAX_NAME_LENGTH);
+		sscanf(line, "%c %s", &operation, input); 	// Store variables
+		printf("Operation: %c\n", operation);
+		printf("input: %s\n", input);
 
     switch(operation){
       case 'a':
-        addFirst(roster, input);  // Append
+        addEnd(roster, input);  // Append
         break;
       case 'd':
-        delete(roster, (int)input);   // Delete at index input
+        delete(roster, atoi(input));   // Delete at index input
         break;
       case 'o':
         outputList(roster);   // Output the list
@@ -78,23 +92,15 @@ int main()
         clear(roster);  // Clear the list
         break;
       case 's':
-      //TODO Should be void* type for third argument
-        set(roster, input[1], input);   // Change value at a specified location
+				// (LinkedList, int, void);
+				// Skip this for now
+        //set(roster, atpo(input), input);   // Change value at a specified location
+
         break;
       default:
         exit(2);  // If the first char is invalid, exit
     }
   }
-  //   // handle output
-  // //   int i;
-  // //   Node *current = roster->header;
-  // //   for(i=0; i<roster->size; i++){
-  // //     fprintf(outputFile, "%s\n", current->data);
-  // //     current = current->next;
-  // //   }
-  // // }
-  // fclose(outputFile);
-
   return 0;
 }
 
@@ -135,7 +141,8 @@ void *delete(LinkedList *someList, int position)
 
   // walk down the list until we reach the node to be removed
   Node *temp = someList->header;
-  for (int i = 0; i <= position; i++)
+  int i;
+	for (i = 0; i <= position; i++)
     temp = temp->next;
 
   void *removedData = temp->data;
@@ -157,20 +164,21 @@ void outputList(LinkedList *someList)
   if (someList == NULL)
     return;
 
-  if (someList->size == 0)
+	if(someList->size == 0)
   {
     printf("[]\n");
-    return;
-  }
+		return;
+	}
 
   printf("[");
 
   Node *temp = someList->header->next;
 
-  for (int num = 0; num < someList->size; num++)
+	int num;
+  for (num = 0; num < someList->size; num++)
   {
     printf("%s%s", (char *)temp->data,
-    (num < someList->size - 1) ? " " : "");
+									 (num < someList->size - 1) ? " " : "");
     temp = temp->next;
   }
   printf("]\n");
@@ -183,10 +191,11 @@ void addFirst(LinkedList *someList, void *newElement)
   Node *newNode = (Node*)malloc(sizeof(Node));
 
   newNode->data = newElement;   // Data
-  newNode->next = someList->header;   // Next
-  newNode->prev = findLast(someList);   // Previous
-  someList->header = newNode;   // someList Header
-  free(newNode);
+  newNode->next = someList->header->next;   // Next
+  newNode->prev = someList->header;   // Previous
+	someList->header->next->prev = newNode;
+	someList->header->next = newNode;
+	someList->size ++;
 }
 
 // remove the last element in the list, and return a pointer
@@ -213,15 +222,21 @@ void *removeLast(LinkedList *someList)
 // this function effectively empties the list
 void clear(LinkedList *someList)
 {
+	// already empty
+	if(someList == NULL){
+		return;
+	}
+
   Node *current = someList->header;
-  Node *iter;
   while(current != NULL){
-    iter = current->next;
-    free(current->data);
-    free(current);
-    current = iter;
-  }
-  someList->header = NULL;
+		Node *next = current->next; 	// create next
+		free(current->data); 	//
+		free(current); 	// free current
+		current = next; 	// move to next
+	}
+  someList->header->next = someList->header;
+	someList->header->prev = someList->header;
+	someList->size = 0;
 }
 
 // alter the data in the given position in the List to

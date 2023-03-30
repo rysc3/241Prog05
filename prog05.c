@@ -74,6 +74,7 @@ int main()
         clear(roster);  // Clear the list
         break;
       case 's':
+      //TODO Should be void* type for third argument
         set(roster, input[1], input);   // Change value at a specified location
         break;
       default:

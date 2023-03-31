@@ -203,20 +203,31 @@ void addFirst(LinkedList *someList, void *newElement)
 // if the list is empty, exit the program with status 2
 void *removeLast(LinkedList *someList)
 {
-  if(someList->header == NULL){
-    exit(2);
-  }
-  Node *head = someList->header;  // Save some typing
-  Node *lastNode = head->prev;  // Store prev node for return
-  if(lastNode == head){
-    someList->header = NULL;
-  }else{
-    lastNode->prev->next = NULL;
-    head->prev = lastNode->prev;
-  }
-  void *data = lastNode->data;
-  free(lastNode);
-  return data;
+  // if(someList->header == NULL){
+  //   exit(2);
+  // }
+  // Node *head = someList->header;  // Save some typing
+  // Node *lastNode = head->prev;  // Store prev node for return
+  // if(lastNode == head){
+  //   someList->header = NULL;
+  // }else{
+  //   lastNode->prev->next = NULL;
+  //   head->prev = lastNode->prev;
+  // }
+  // void *data = lastNode->data;
+  // free(lastNode);
+  // return data;
+
+  // if(someList == NULL){
+  //   return;
+  // }
+
+  Node *current = someList->header->prev;
+  current->prev->next = someList->header;   // Final item should point to head
+  current->prev = NULL;   // reset
+  current->next = NULL;   // reset
+  free(current->data);  // free (dynamically allocated)
+  someList->size --;
 }
 
 // this function effectively empties the list
@@ -230,8 +241,13 @@ void clear(LinkedList *someList)
   Node *current = someList->header;
   while(current != NULL){
 		Node *next = current->next; 	// create next
-		free(current->data); 	//
-		free(current); 	// free current
+		// free(current->data); 	//
+		// free(current); 	// free current
+
+    current->prev = NULL;
+    free(current->data);
+    current->next = NULL;
+
 		current = next; 	// move to next
 	}
   someList->header->next = someList->header;

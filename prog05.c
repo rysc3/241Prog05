@@ -55,7 +55,8 @@ int main()
 
 	char line[MAX_NAME_LENGTH];
 	char operation;
-	char input;
+	char *input;
+  int num;
 
 
   while(fgets(line, MAX_NAME_LENGTH, stdin) != NULL){
@@ -68,21 +69,28 @@ int main()
  *  be cast to an int in the swtich statement
  */
 		char *input = malloc(MAX_NAME_LENGTH);
-		sscanf(line, "%c %s", &operation, input); 	// Store variables
-		printf("Operation: %c\n", operation);
-		printf("input: %s\n", input);
+		// sscanf(line, "%c %s", &operation, input); 	// Store variables
+    sscanf(line, "%c", &operation);
+		// printf("Operation: %c\n", operation);
+		// printf("input: %s\n", input);
 
     switch(operation){
       case 'a':
+        sscanf(line, "%c %s", &operation, input);
+        // printf("input: %s\n", input);
         addEnd(roster, input);  // Append
         break;
       case 'd':
+        sscanf(line, "%c %s", &operation, input);
+        // printf("input: %s\n", input);
         delete(roster, atoi(input));   // Delete at index input
         break;
       case 'o':
         outputList(roster);   // Output the list
         break;
       case 'f':
+        sscanf(line, "%c %s", &operation, input);
+        // printf("input: %s\n", input);
         addFirst(roster, input);  // Add to beginning of list
         break;
       case 'r':
@@ -92,9 +100,12 @@ int main()
         clear(roster);  // Clear the list
         break;
       case 's':
+        sscanf(line, "%c %d %s", &operation, &num, input);
+        // printf("num: %d\n", num);
+        // printf("input: %s\n", input);
 				// (LinkedList, int, void);
 				// Skip this for now
-        //set(roster, atpo(input), input);   // Change value at a specified location
+        set(roster, num, input);
 
         break;
       default:
@@ -228,6 +239,7 @@ void *removeLast(LinkedList *someList)
   current->next = NULL;   // reset
   free(current->data);  // free (dynamically allocated)
   someList->size --;
+  return 0;
 }
 
 // this function effectively empties the list
@@ -262,25 +274,17 @@ void clear(LinkedList *someList)
 // then exit the program with status 2
 void *set(LinkedList *someList, int position, void *newElement)
 {
-  // Illegal position
-  if(position > someList->size || position < 0){
-    exit(2);
-  }
-  Node *head = someList->header;
-  Node *iter = someList->header;
 
+  Node *current = someList->header->next;
   int i;
-  for(i=0; i<position; i++){  // Find proper node
-    if(iter == NULL){   // catch any bad values
-      exit(2);
-    }
-    iter = iter->next;
+  for(i=0; i<position; i++){
+    current = current->next;
   }
+  // we now have the correct current
 
-  void *data = iter->data;
-  iter->data = newElement;  // Set new data
-  return data;
-  //TODO free a returning variable??
+  // now just change the data
+  current->data = newElement;
+  return 0;
 }
 
 // Helper method, loops through and returns the Node which is in the last position

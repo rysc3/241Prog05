@@ -1,4 +1,8 @@
-/**  @author Ryan Scherbarth **/
+/**
+ * @author Ryan Scherbarth
+ * cs241
+ * 3/30/23
+**/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,7 +48,61 @@ int main()
 
   createList(roster); // initialize the fields of the list
 
-  // process a sequence of List operations from stdin
+	/*
+ *	redirect through stdin to take input and output
+ *	./a.out < input > output1
+  */
+
+	char line[MAX_NAME_LENGTH];
+	char operation;
+	char *input;
+  int num;
+
+
+  while(fgets(line, MAX_NAME_LENGTH, stdin) != NULL){
+/*
+ * stores the variables we will use for the doing things
+ * Operation takes the first char of the line
+ * input will store the string that follows the line
+ *
+ * -- If the operation needs an int as an input, it will
+ *  be cast to an int in the swtich statement
+ */
+		char *input = malloc(MAX_NAME_LENGTH);
+
+    sscanf(line, "%c", &operation);   // Store variables
+
+    switch(operation){
+      case 'a':
+        sscanf(line, "%c %s", &operation, input);
+        addEnd(roster, input);  // Append
+        break;
+      case 'd':
+        sscanf(line, "%c %s", &operation, input);
+        delete(roster, atoi(input));   // Delete at index input
+        break;
+      case 'o':
+        outputList(roster);   // Output the list
+        break;
+      case 'f':
+        sscanf(line, "%c %s", &operation, input);
+        addFirst(roster, input);  // Add to beginning of list
+        break;
+      case 'r':
+        removeLast(roster);   // Remove last item in list
+        break;
+      case 'c':
+        clear(roster);  // Clear the list
+        break;
+      case 's':
+        sscanf(line, "%c %d %s", &operation, &num, input);
+        set(roster, num, input);
+        break;
+      default:
+        exit(2);  // If the first char is invalid, exit
+    }
+  }
+  return 0;
 }
 
 // Initially the List is empty
@@ -84,7 +142,8 @@ void *delete(LinkedList *someList, int position)
 
   // walk down the list until we reach the node to be removed
   Node *temp = someList->header;
-  for (int i = 0; i <= position; i++)
+  int i;
+	for (i = 0; i <= position; i++)
     temp = temp->next;
 
   void *removedData = temp->data;
@@ -106,20 +165,21 @@ void outputList(LinkedList *someList)
   if (someList == NULL)
     return;
 
-  if (someList->size == 0)
+	if(someList->size == 0)
   {
     printf("[]\n");
-    return;
-  }
+		return;
+	}
 
   printf("[");
 
   Node *temp = someList->header->next;
 
-  for (int num = 0; num < someList->size; num++)
+	int num;
+  for (num = 0; num < someList->size; num++)
   {
     printf("%s%s", (char *)temp->data,
-    (num < someList->size - 1) ? " " : "");
+									 (num < someList->size - 1) ? " " : "");
     temp = temp->next;
   }
   printf("]\n");
@@ -132,9 +192,11 @@ void addFirst(LinkedList *someList, void *newElement)
   Node *newNode = (Node*)malloc(sizeof(Node));
 
   newNode->data = newElement;   // Data
-  newNode->next = someList->header;   // Next
-  newNode->prev = findLast(someList);   // Previous
-  someList->header = newNode;   // someList Header
+  newNode->next = someList->header->next;   // Next
+  newNode->prev = someList->header;   // Previous
+	someList->header->next->prev = newNode;
+	someList->header->next = newNode;
+	someList->size ++;
 }
 
 // remove the last element in the list, and return a pointer
@@ -142,12 +204,38 @@ void addFirst(LinkedList *someList, void *newElement)
 // if the list is empty, exit the program with status 2
 void *removeLast(LinkedList *someList)
 {
-  return NULL;
+  Node *current = someList->header->prev;
+  current->prev->next = someList->header;   // Final item should point to head
+  current->prev = NULL;   // reset
+  current->next = NULL;   // reset
+  free(current->data);  // free (dynamically allocated)
+  someList->size --;
+  return 0;
 }
 
 // this function effectively empties the list
 void clear(LinkedList *someList)
 {
+	// already empty
+	if(someList == NULL){
+		return;
+	}
+
+  Node *current = someList->header;
+  while(current != NULL){
+		Node *next = current->next; 	// create next
+		// free(current->data); 	//
+		// free(current); 	// free current
+
+    current->prev = NULL;
+    free(current->data);
+    current->next = NULL;
+
+		current = next; 	// move to next
+	}
+  someList->header->next = someList->header;
+	someList->header->prev = someList->header;
+	someList->size = 0;
 }
 
 // alter the data in the given position in the List to
@@ -157,7 +245,17 @@ void clear(LinkedList *someList)
 // then exit the program with status 2
 void *set(LinkedList *someList, int position, void *newElement)
 {
-  return NULL;
+
+  Node *current = someList->header->next;
+  int i;
+  for(i=0; i<position; i++){
+    current = current->next;
+  }
+  // we now have the correct current
+
+  // now just change the data
+  current->data = newElement;
+  return 0;
 }
 
 // Helper method, loops through and returns the Node which is in the last position

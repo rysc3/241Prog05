@@ -69,20 +69,16 @@ int main()
  *  be cast to an int in the swtich statement
  */
 		char *input = malloc(MAX_NAME_LENGTH);
-		// sscanf(line, "%c %s", &operation, input); 	// Store variables
-    sscanf(line, "%c", &operation);
-		// printf("Operation: %c\n", operation);
-		// printf("input: %s\n", input);
+
+    sscanf(line, "%c", &operation);   // Store variables
 
     switch(operation){
       case 'a':
         sscanf(line, "%c %s", &operation, input);
-        // printf("input: %s\n", input);
         addEnd(roster, input);  // Append
         break;
       case 'd':
         sscanf(line, "%c %s", &operation, input);
-        // printf("input: %s\n", input);
         delete(roster, atoi(input));   // Delete at index input
         break;
       case 'o':
@@ -90,7 +86,6 @@ int main()
         break;
       case 'f':
         sscanf(line, "%c %s", &operation, input);
-        // printf("input: %s\n", input);
         addFirst(roster, input);  // Add to beginning of list
         break;
       case 'r':
@@ -101,12 +96,7 @@ int main()
         break;
       case 's':
         sscanf(line, "%c %d %s", &operation, &num, input);
-        // printf("num: %d\n", num);
-        // printf("input: %s\n", input);
-				// (LinkedList, int, void);
-				// Skip this for now
         set(roster, num, input);
-
         break;
       default:
         exit(2);  // If the first char is invalid, exit
@@ -214,25 +204,6 @@ void addFirst(LinkedList *someList, void *newElement)
 // if the list is empty, exit the program with status 2
 void *removeLast(LinkedList *someList)
 {
-  // if(someList->header == NULL){
-  //   exit(2);
-  // }
-  // Node *head = someList->header;  // Save some typing
-  // Node *lastNode = head->prev;  // Store prev node for return
-  // if(lastNode == head){
-  //   someList->header = NULL;
-  // }else{
-  //   lastNode->prev->next = NULL;
-  //   head->prev = lastNode->prev;
-  // }
-  // void *data = lastNode->data;
-  // free(lastNode);
-  // return data;
-
-  // if(someList == NULL){
-  //   return;
-  // }
-
   Node *current = someList->header->prev;
   current->prev->next = someList->header;   // Final item should point to head
   current->prev = NULL;   // reset
